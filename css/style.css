@@ -82,15 +82,11 @@ body {
 /* --------------------------------------------------------------------------
    4. Top Floating UI (LIVE badge + clock)
    -------------------------------------------------------------------------- */
-/* Left brand stack: FT logo on top, LIVE badge below */
+/* Left side: only FT logo */
 .left-brand-stack {
     position: absolute;
     top: clamp(14px, 2vh, 24px);
     left: clamp(14px, 2vw, 28px);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
     z-index: 10;
 }
 
