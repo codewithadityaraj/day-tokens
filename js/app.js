@@ -8,25 +8,29 @@
 'use strict';
 
 // --------------------------------------------------------------------------
-// 1. All 14 Programs Data
+// 1. Programs Data
+//    Live data is pulled from a published Google Sheet (CSV). The array below
+//    is a fallback used only if the sheet can't be reached.
 //    Each program has: name (displayed), target, achieved
-//    "achieved" is live — gets updated via simulator
 // --------------------------------------------------------------------------
-const programs = [
-    { name: "IIT Jodhpur BSc / BS Program",      target: 25, achieved: 15 },
-    { name: "IIT Jodhpur MTech — CSE",            target: 20, achieved: 12 },
-    { name: "IIT Jodhpur MTech — AI & ML",        target: 22, achieved: 18 },
-    { name: "IIT Jodhpur PhD — Engineering",      target: 10, achieved:  7 },
-    { name: "IIT Jodhpur MBA — Technology Mgmt",  target: 18, achieved:  9 },
-    { name: "IIT Jodhpur BTech — EE",             target: 30, achieved: 21 },
-    { name: "IIT Jodhpur BTech — ME",             target: 28, achieved: 14 },
-    { name: "IIT Jodhpur BTech — Civil",          target: 24, achieved: 16 },
-    { name: "IIT Jodhpur BTech — Chemical",       target: 20, achieved: 11 },
-    { name: "IIT Jodhpur MTech — Data Science",   target: 15, achieved: 10 },
-    { name: "IIT Jodhpur MSc — Mathematics",      target: 12, achieved:  8 },
-    { name: "IIT Jodhpur MSc — Physics",          target: 14, achieved:  9 },
-    { name: "IIT Jodhpur MTech — Bioscience",     target: 16, achieved:  6 },
-    { name: "IIT Jodhpur PhD — Sciences",         target: 10, achieved:  4 },
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYw0XpoBrl5gNAHq3n2p-OLAEOHwsBVVQy70ffPRRSk2SloYaqPPZ1X6YcuesaGvzlgf1EDUE8bwJV/pub?gid=1315863250&single=true&output=csv";
+const SHEET_REFRESH_MS = 30000; // re-fetch the sheet every 30s
+
+let programs = [
+    { name: "IIT Jodhpur — BSc / BS Program",      institute: "IIT-Jodhpur", target: 25, achieved: 15 },
+    { name: "IIT Jodhpur — MTech — CSE",            institute: "IIT-Jodhpur", target: 20, achieved: 12 },
+    { name: "IIT Jodhpur — MTech — AI & ML",        institute: "IIT-Jodhpur", target: 22, achieved: 18 },
+    { name: "IIT Jodhpur — PhD — Engineering",      institute: "IIT-Jodhpur", target: 10, achieved:  7 },
+    { name: "IIT Jodhpur — MBA — Technology Mgmt",  institute: "IIT-Jodhpur", target: 18, achieved:  9 },
+    { name: "IIT Jodhpur — BTech — EE",             institute: "IIT-Jodhpur", target: 30, achieved: 21 },
+    { name: "IIT Jodhpur — BTech — ME",             institute: "IIT-Jodhpur", target: 28, achieved: 14 },
+    { name: "IIT Jodhpur — BTech — Civil",          institute: "IIT-Jodhpur", target: 24, achieved: 16 },
+    { name: "IIT Jodhpur — BTech — Chemical",       institute: "IIT-Jodhpur", target: 20, achieved: 11 },
+    { name: "IIT Jodhpur — MTech — Data Science",   institute: "IIT-Jodhpur", target: 15, achieved: 10 },
+    { name: "IIT Jodhpur — MSc — Mathematics",      institute: "IIT-Jodhpur", target: 12, achieved:  8 },
+    { name: "IIT Jodhpur — MSc — Physics",          institute: "IIT-Jodhpur", target: 14, achieved:  9 },
+    { name: "IIT Jodhpur — MTech — Bioscience",     institute: "IIT-Jodhpur", target: 16, achieved:  6 },
+    { name: "IIT Jodhpur — PhD — Sciences",         institute: "IIT-Jodhpur", target: 10, achieved:  4 },
 ];
 
 // --------------------------------------------------------------------------
@@ -52,17 +56,128 @@ const CIRC = 2 * Math.PI * 52; // ≈ 326.73
 // --------------------------------------------------------------------------
 // 3. Boot
 // --------------------------------------------------------------------------
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initClock();
     initFullscreen();
     initSecretTriggers();
     initControlPanel();
     initAudioToggle();
     initSimulator();
+
+    // Pull live data from the Google Sheet before first paint (falls back to
+    // the hardcoded array if the fetch fails).
+    await loadProgramsFromSheet({ firstLoad: true });
+
     populateProgramJumpList();
     renderProgram(currentProgramIndex, false);
     startRotation();
+
+    // Keep refreshing from the sheet so the poster stays live.
+    setInterval(() => loadProgramsFromSheet({ firstLoad: false }), SHEET_REFRESH_MS);
 });
+
+// --------------------------------------------------------------------------
+// 3b. Live data — fetch & parse the published Google Sheet CSV
+// --------------------------------------------------------------------------
+async function loadProgramsFromSheet({ firstLoad }) {
+    try {
+        const res = await fetch(SHEET_CSV_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        const rows = parseCSV(text);
+        if (rows.length < 2) throw new Error('No data rows');
+
+        // Map headers (case-insensitive) so column order can change safely.
+        const header = rows[0].map(h => h.trim().toLowerCase());
+        const iName      = header.findIndex(h => h.includes('program'));
+        const iInstitute = header.findIndex(h => h.includes('institut'));
+        const iTarget    = header.findIndex(h => h.includes('target'));
+        const iAchieved  = header.findIndex(h => h.includes('achiev'));
+        if (iName < 0 || iTarget < 0 || iAchieved < 0) throw new Error('Missing expected columns');
+
+        const fresh = rows.slice(1)
+            .filter(r => (r[iName] || '').trim() !== '')
+            .map(r => ({
+                name:      r[iName].trim(),
+                institute: iInstitute >= 0 ? (r[iInstitute] || '').trim() : '',
+                target:    Math.max(0, parseInt(r[iTarget], 10) || 0),
+                achieved:  Math.max(0, parseInt(r[iAchieved], 10) || 0),
+            }));
+        if (fresh.length === 0) throw new Error('No valid programs');
+
+        if (firstLoad) {
+            programs = fresh;
+            return;
+        }
+
+        // On a refresh: detect achievement increases for chime/toast, then
+        // swap in the new data and re-render the visible program in place.
+        const prevByName = new Map(programs.map(p => [p.name, p.achieved]));
+        let gained = null;
+        for (const p of fresh) {
+            const before = prevByName.get(p.name);
+            if (before !== undefined && p.achieved > before) gained = p;
+        }
+
+        const currentName = programs[currentProgramIndex]?.name;
+        programs = fresh;
+        // Keep pointing at the same program if it still exists; else clamp.
+        const newIdx = programs.findIndex(p => p.name === currentName);
+        currentProgramIndex = newIdx >= 0 ? newIdx
+            : Math.min(currentProgramIndex, programs.length - 1);
+
+        populateProgramJumpList();
+        renderProgram(currentProgramIndex, false);
+
+        if (gained) {
+            playSuccessChime();
+            showToast('TOKEN SECURED! 🎉', `${gained.name} — now at ${gained.achieved}`, 'success');
+        }
+    } catch (err) {
+        if (firstLoad) {
+            // Keep the fallback array; just let the user know we're offline-ish.
+            console.warn('Sheet fetch failed, using fallback data:', err);
+        } else {
+            console.warn('Sheet refresh failed:', err);
+        }
+    }
+}
+
+// Minimal CSV parser that handles quoted fields, commas, and escaped quotes.
+function parseCSV(text) {
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    const s = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    for (let i = 0; i < s.length; i++) {
+        const c = s[i];
+        if (inQuotes) {
+            if (c === '"') {
+                if (s[i + 1] === '"') { field += '"'; i++; }
+                else inQuotes = false;
+            } else field += c;
+        } else {
+            if (c === '"') inQuotes = true;
+            else if (c === ',') { row.push(field); field = ''; }
+            else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+            else field += c;
+        }
+    }
+    if (field !== '' || row.length) { row.push(field); rows.push(row); }
+    return rows;
+}
+
+function formatInstituteName(institute) {
+    if (!institute) return '';
+    return institute.replace(/-/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+}
+
+function getProgramDisplayName(name) {
+    for (const sep of [' - ', ' — ']) {
+        const idx = name.indexOf(sep);
+        if (idx >= 0) return name.slice(idx + sep.length).trim();
+    }
+    return name;
+}
 
 // --------------------------------------------------------------------------
 // 4. Fullscreen Toggle
@@ -170,8 +285,10 @@ function renderProgram(idx, withFade) {
     const prog = programs[idx];
 
     const doRender = () => {
-        // Header: program name
-        document.getElementById('label-program-name').textContent = prog.name;
+        // Header: institute + program title
+        const instituteEl = document.getElementById('label-institute-name');
+        if (instituteEl) instituteEl.textContent = formatInstituteName(prog.institute);
+        document.getElementById('label-program-name').textContent = getProgramDisplayName(prog.name);
 
         // Banner target label
         const bannerTarget = document.getElementById('banner-target-label');
@@ -371,6 +488,7 @@ function initControlPanel() {
 // --------------------------------------------------------------------------
 function populateProgramJumpList() {
     const sel = document.getElementById('program-jump-select');
+    sel.innerHTML = '';
     programs.forEach((p, i) => {
         const opt = document.createElement('option');
         opt.value = i;
