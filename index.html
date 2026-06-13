@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Counter - IIT Jodhpur</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Caveat:wght@600;700&family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Full-screen poster -->
+    <div class="poster-container">
+
+        <!-- Background overlay -->
+        <div class="bg-overlay"></div>
+
+        <!-- FT Company Logo + LIVE badge stacked on top-left -->
+        <div class="left-brand-stack">
+            <img class="ft-logo" src="assets/FT logo black.png" alt="FT Company Logo">
+            <div class="live-badge" aria-live="polite">
+                <span class="live-pulse-dot"></span>
+                <span>LIVE</span>
+                <span class="program-counter" id="program-counter">1 / 14</span>
+            </div>
+        </div>
+
+        <!-- Clock + Fullscreen button -->
+        <div class="clock-trigger-area">
+            <span id="poster-clock">12:00 PM</span>
+            <button class="fullscreen-btn" id="fullscreen-btn" aria-label="Toggle Fullscreen" title="Toggle Fullscreen">
+                <!-- Enter fullscreen icon -->
+                <svg id="icon-enter-fs" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                </svg>
+                <!-- Exit fullscreen icon (hidden by default) -->
+                <svg id="icon-exit-fs" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                    <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Countdown progress bar (shows time until next program flip) -->
+        <div class="flip-progress-bar">
+            <div class="flip-progress-fill" id="flip-progress-fill"></div>
+        </div>
+
+        <!-- Main poster content (fades out/in on program switch) -->
+        <div class="poster-content" id="poster-content">
+
+            <!-- Header -->
+            <header class="poster-header">
+                <div class="logo-and-title" id="brand-logo-trigger">
+                    <svg class="iitj-logo" viewBox="0 0 100 100" aria-hidden="true">
+                        <circle cx="50" cy="50" r="46" fill="none" stroke="#003566" stroke-width="4"/>
+                        <circle cx="50" cy="50" r="41" fill="none" stroke="#003566" stroke-width="1.5"/>
+                        <path d="M50 15 L22 80 L78 80 Z" fill="none" stroke="#003566" stroke-width="3" stroke-linejoin="round"/>
+                        <line x1="50" y1="15" x2="50" y2="80" stroke="#003566" stroke-width="2"/>
+                        <line x1="36" y1="47.5" x2="64" y2="47.5" stroke="#003566" stroke-width="2"/>
+                        <line x1="29" y1="63.7" x2="71" y2="63.7" stroke="#003566" stroke-width="2"/>
+                        <circle cx="50" cy="38" r="4.5" fill="#003566"/>
+                        <path d="M42 63.7 A 8 8 0 0 1 58 63.7" fill="none" stroke="#003566" stroke-width="2"/>
+                        <path d="M44 47.5 A 6 6 0 0 1 56 47.5" fill="none" stroke="#003566" stroke-width="2"/>
+                    </svg>
+
+                    <div class="header-titles">
+                        <span class="uni-name">IIT JODHPUR</span>
+                        <div class="divider-line"></div>
+                        <span class="program-name" id="label-program-name">BSc / BS PROGRAM</span>
+                    </div>
+                </div>
+
+                <div class="title-main-wrapper">
+                    <svg class="spark spark-left" viewBox="0 0 24 24" width="clamp(20px, 3vw, 36px)" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round">
+                        <path d="M5 12h4M12 5v4M12 15v4M19 12h-4M7 7l2 2M17 17l-2-2M17 7l-2 2M7 17l2-2"/>
+                    </svg>
+                    <h1 class="main-title">TOKEN COUNTER</h1>
+                    <svg class="spark spark-right" viewBox="0 0 24 24" width="clamp(20px, 3vw, 36px)" fill="none" stroke="#0f6fff" stroke-width="2.5" stroke-linecap="round">
+                        <path d="M5 12h4M12 5v4M12 15v4M19 12h-4M7 7l2 2M17 17l-2-2M17 7l-2 2M7 17l2-2"/>
+                    </svg>
+                </div>
+
+                <div class="subtitle-handwritten">
+                    <p>One token at a time,</p>
+                    <p>One step closer to <span class="highlight-underline">our goal!</span></p>
+                    <svg class="handwritten-star" viewBox="0 0 24 24" width="24" height="24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="#ffd700" stroke="#f59e0b" stroke-width="1.5"/>
+                    </svg>
+                </div>
+            </header>
+
+            <!-- KPI Cards -->
+            <main class="poster-main">
+                <div class="kpi-cards-grid">
+
+                    <!-- Target Card -->
+                    <div class="card target-card">
+                        <div class="card-badge badge-blue">TARGET OF THE DAY</div>
+                        <div class="card-inner">
+                            <div class="graphic-container">
+                                <svg viewBox="0 0 120 120" class="target-svg svg-shadow">
+                                    <circle cx="60" cy="60" r="48" fill="none" stroke="#003566" stroke-width="9"/>
+                                    <circle cx="60" cy="60" r="32" fill="none" stroke="#003566" stroke-width="9"/>
+                                    <circle cx="60" cy="60" r="16" fill="none" stroke="#003566" stroke-width="9"/>
+                                    <circle cx="60" cy="60" r="4" fill="#003566"/>
+                                    <line x1="60" y1="4" x2="60" y2="116" stroke="#003566" stroke-width="1.5" stroke-dasharray="4,5"/>
+                                    <line x1="4" y1="60" x2="116" y2="60" stroke="#003566" stroke-width="1.5" stroke-dasharray="4,5"/>
+                                    <path d="M100 20 L58 62" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+                                    <polygon points="56,55 51,68 64,63" fill="#f59e0b"/>
+                                    <path d="M92 20 L102 30 M95 15 L105 25 M98 10 L108 20" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <div class="value-display-wrapper">
+                                <svg class="num-spark" viewBox="0 0 20 20" width="22" fill="none" stroke="#003566" stroke-width="2.5" stroke-linecap="round">
+                                    <path d="M3 10h5M10 3v5M4 4l3 3"/>
+                                </svg>
+                                <span class="count-value text-blue" id="kpi-target-text">25</span>
+                                <svg class="num-spark" viewBox="0 0 20 20" width="22" fill="none" stroke="#003566" stroke-width="2.5" stroke-linecap="round">
+                                    <path d="M17 10h-5M10 3v5M16 4l-3 3"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achieved Card -->
+                    <div class="card achieved-card">
+                        <div class="card-badge badge-green">ACV (ACHIEVED COUNT TODAY)</div>
+                        <div class="card-inner">
+                            <div class="graphic-container progress-ring-wrapper">
+                                <svg width="130" height="130" viewBox="0 0 130 130" class="svg-shadow">
+                                    <circle cx="65" cy="65" r="52" fill="none" stroke="#e0f2e9" stroke-width="12"/>
+                                    <circle id="progress-circle-fill" cx="65" cy="65" r="52" fill="none"
+                                        stroke="#22c55e" stroke-width="12" stroke-linecap="round"
+                                        stroke-dasharray="326.73" stroke-dashoffset="130.69"/>
+                                </svg>
+                                <span class="progress-inner-num text-green" id="kpi-achieved-text">15</span>
+                            </div>
+
+                            <div class="capsule-container green-capsule-bg">
+                                <svg class="mini-spark" viewBox="0 0 16 16" width="13" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round">
+                                    <path d="M3 8h4M8 3v4"/>
+                                </svg>
+                                <span class="percent-label text-green" id="kpi-percent-text">60%</span>
+                                <svg class="mini-spark" viewBox="0 0 16 16" width="13" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round">
+                                    <path d="M13 8h-4M8 3v4"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom Banner -->
+                <div class="bottom-banner-card">
+                    <div class="banner-inner">
+                        <div class="rocket-wrapper">
+                            <svg class="rocket-svg" viewBox="0 0 64 64">
+                                <path class="rocket-flame" d="M12 52 c-4 4 -6 12 -4 12 c 0 0 8-2 12-4 c 4-2 0-10 -8-8" fill="#f59e0b"/>
+                                <circle cx="8" cy="56" r="6" fill="#ffffff" opacity="0.8"/>
+                                <circle cx="4" cy="50" r="5" fill="#ffffff" opacity="0.6"/>
+                                <circle cx="14" cy="60" r="4" fill="#ffffff" opacity="0.6"/>
+                                <path d="M20 44 L44 20 C48 16 52 8 56 4 C52 8 44 12 40 16 L16 40 Z" fill="#ffffff" stroke="#003566" stroke-width="3"/>
+                                <path d="M46 14 C48 12 52 8 56 4 C52 8 48 12 46 14" fill="#ef4444" stroke="#003566" stroke-width="3"/>
+                                <circle cx="34" cy="26" r="3.5" fill="#003566"/>
+                                <path d="M16 40 L4 40 L12 32 Z" fill="#ef4444" stroke="#003566" stroke-width="2"/>
+                                <path d="M20 44 L20 56 L28 48 Z" fill="#ef4444" stroke="#003566" stroke-width="2"/>
+                                <!-- Stars around rocket -->
+                                <circle cx="38" cy="10" r="2" fill="#ffd700" opacity="0.8"/>
+                                <circle cx="50" cy="22" r="1.5" fill="#ffd700" opacity="0.6"/>
+                                <circle cx="28" cy="12" r="1.5" fill="#ffd700" opacity="0.7"/>
+                            </svg>
+                        </div>
+
+                        <div class="banner-text-content">
+                            <h2 class="banner-title">Let's hit <span class="highlight-yellow" id="banner-target-label">25</span> today!</h2>
+                            <div class="banner-underline"></div>
+                            <p class="banner-subtitle">Teamwork. Consistency. <span class="highlight-yellow-sub">Success.</span></p>
+                        </div>
+
+                        <div class="mascot-wrapper">
+                            <img class="mascot-img" src="assets/camel_mascot.png" alt="IIT Jodhpur Camel Mascot">
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="poster-footer">
+                <div class="whatsapp-badge">
+                    <svg class="wa-icon" viewBox="0 0 24 24" width="22" height="22">
+                        <circle cx="12" cy="12" r="10" fill="#22c55e"/>
+                        <path d="M9 16C8.5 15.5 7.5 14.5 7.2 13C7 12 7.5 11.5 8 11C8.2 10.8 8.4 11 8.6 11.2L9.5 12.5C9.7 12.8 9.7 13 9.4 13.3L9.1 13.6C9 13.7 9 13.8 9.1 13.9C9.3 14.3 9.7 14.7 10.1 14.9C10.2 15 10.3 15 10.4 14.9L10.7 14.6C11 14.3 11.2 14.3 11.5 14.5L12.8 15.4C13 15.6 13.2 15.8 13 16C12.5 16.5 12 17 11 16.8C9.5 16.5 8.5 15.5 8 15Z" fill="#fff"/>
+                    </svg>
+                    <span class="wa-text">Keep contributing | Keep growing | Keep winning 💙</span>
+                </div>
+            </footer>
+
+        </div><!-- /.poster-content -->
+    </div><!-- /.poster-container -->
+
+    <!-- Settings Panel (hidden, opened via Shift+S or double-click logo) -->
+    <aside class="control-panel-drawer" id="control-panel-drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <div class="panel-header">
+            <h2 id="settings-title">WALLBOARD CONTROLS</h2>
+            <button class="panel-close-btn" id="panel-close-btn" aria-label="Close">&times;</button>
+        </div>
+        <div class="panel-content">
+            <p class="panel-description">Open with <strong>Shift+S</strong> or double-click the logo. Changes apply to the active program.</p>
+            <hr class="panel-divider">
+
+            <div class="control-group">
+                <label class="control-group-title">Current Program Values</label>
+                <div class="input-row">
+                    <div class="input-col">
+                        <label for="input-target">Target</label>
+                        <input type="number" id="input-target" min="1" max="1000" value="25" class="number-input">
+                    </div>
+                    <div class="input-col">
+                        <label for="input-achieved">Achieved</label>
+                        <input type="number" id="input-achieved" min="0" max="1000" value="15" class="number-input">
+                    </div>
+                </div>
+                <div class="button-row">
+                    <button class="btn btn-outline" id="btn-decrement-achieved">- 1</button>
+                    <button class="btn btn-outline" id="btn-increment-achieved">+ 1 Token</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-group-title">Simulate Live Sale</label>
+                <div class="live-simulator-options">
+                    <label for="sales-rep-selector">Employee</label>
+                    <select id="sales-rep-selector" class="select-input">
+                        <option>Sarah Connor</option>
+                        <option>Marcus Wright</option>
+                        <option>Kyle Reese</option>
+                        <option>John Connor</option>
+                        <option>Dr. Silberman</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-block" id="btn-trigger-sale">Simulate Token Sale</button>
+            </div>
+
+            <div class="control-group">
+                <div class="toggle-container">
+                    <div class="toggle-info">
+                        <span class="toggle-label">Auto Simulation</span>
+                        <span class="toggle-description">Adds tokens every 8s</span>
+                    </div>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="chk-auto-simulation">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="toggle-container">
+                    <div class="toggle-info">
+                        <span class="toggle-label">Sound Chimes</span>
+                        <span class="toggle-description">Synth chime on each token</span>
+                    </div>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="chk-sound-chimes" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <div class="toggle-container">
+                    <div class="toggle-info">
+                        <span class="toggle-label">Auto Program Rotation</span>
+                        <span class="toggle-description">Flip programs every 30s</span>
+                    </div>
+                    <label class="switch-toggle">
+                        <input type="checkbox" id="chk-auto-rotate" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <hr class="panel-divider">
+            <div class="control-group">
+                <label class="control-group-title">Jump to Program</label>
+                <select id="program-jump-select" class="select-input"></select>
+                <button class="btn btn-outline btn-block" id="btn-jump-program">Go to Program</button>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-block btn-secondary" id="btn-reset-simulator">Reset Current Program</button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Toast Notifications -->
+    <div class="toast-toaster" id="toast-toaster-container" aria-live="polite"></div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

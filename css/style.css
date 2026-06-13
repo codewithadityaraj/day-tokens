@@ -1,0 +1,1080 @@
+/* ==========================================================================
+   LIVE POSTER DASHBOARD — FULL-WIDTH RESPONSIVE DESIGN
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens & Base
+   -------------------------------------------------------------------------- */
+:root {
+    --navy: #003566;
+    --navy-dk: #0c325c;
+    --green: #15803d;
+    --green-br: #22c55e;
+    --yellow: #ffd700;
+    --yellow-a: #f59e0b;
+    --white: #ffffff;
+    --font-h: 'Fredoka', sans-serif;
+    --font-hw: 'Caveat', cursive;
+    --font-b: 'Inter', sans-serif;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    /* No horizontal scroll, vertical allowed */
+    font-family: var(--font-b);
+}
+
+/* --------------------------------------------------------------------------
+   2. Poster Container — fills 100% of the screen
+   -------------------------------------------------------------------------- */
+.poster-container {
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    min-height: 100svh;
+    /* safe viewport for mobile */
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+
+    /* Campus background */
+    background:
+        linear-gradient(180deg,
+            rgba(255, 255, 255, 0.88) 0%,
+            rgba(255, 255, 255, 0.75) 50%,
+            rgba(255, 255, 255, 0.85) 100%),
+        url('../assets/campus_bg.png') center center / cover no-repeat;
+}
+
+/* --------------------------------------------------------------------------
+   3. Flip progress bar (thin strip at very top)
+   -------------------------------------------------------------------------- */
+.flip-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 53, 102, 0.08);
+    z-index: 20;
+}
+
+.flip-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-br), var(--navy));
+    width: 0%;
+    transition: width 1s linear;
+    border-radius: 0 4px 4px 0;
+}
+
+/* --------------------------------------------------------------------------
+   4. Top Floating UI (LIVE badge + clock)
+   -------------------------------------------------------------------------- */
+/* Left brand stack: FT logo on top, LIVE badge below */
+.left-brand-stack {
+    position: absolute;
+    top: clamp(14px, 2vh, 24px);
+    left: clamp(14px, 2vw, 28px);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    z-index: 10;
+}
+
+/* FT logo — big & visible from distance, no background */
+.ft-logo {
+    height: clamp(70px, 10vh, 110px);
+    width: auto;
+    max-width: clamp(200px, 22vw, 340px);
+    object-fit: contain;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.22));
+    background: none;
+    padding: 0;
+    backdrop-filter: none;
+    border-radius: 0;
+}
+
+.live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(34, 197, 94, 0.14);
+    border: 1.5px solid rgba(34, 197, 94, 0.35);
+    padding: 5px 12px;
+    border-radius: 50px;
+    font-family: var(--font-b);
+    font-size: clamp(0.65rem, 1vw, 0.8rem);
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: 0.05em;
+}
+
+.live-pulse-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--green-br);
+    border-radius: 50%;
+    animation: livePulse 1.8s infinite;
+}
+
+@keyframes livePulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, .7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+}
+
+.program-counter {
+    background: rgba(0, 53, 102, 0.12);
+    border-radius: 50px;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    color: var(--navy);
+    font-weight: 700;
+    margin-left: 4px;
+}
+
+.clock-trigger-area {
+    position: absolute;
+    top: clamp(12px, 2vh, 20px);
+    right: clamp(12px, 2vw, 24px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+}
+
+#poster-clock {
+    font-size: clamp(0.75rem, 1.2vw, 0.95rem);
+    font-weight: 700;
+    color: rgba(12, 50, 92, 0.75);
+    background: rgba(255, 255, 255, 0.55);
+    padding: 5px 12px;
+    border-radius: 50px;
+    backdrop-filter: blur(8px);
+}
+
+/* FT logo inside clock area removed — now in left stack */
+
+.ghost-config-btn,
+.fullscreen-btn {
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    color: rgba(12, 50, 92, 0.5);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+    backdrop-filter: blur(8px);
+}
+
+.ghost-config-btn:hover,
+.fullscreen-btn:hover {
+    background: var(--navy);
+    color: #fff;
+}
+
+/* FT company logo — top-right beside clock */
+
+
+/* --------------------------------------------------------------------------
+   5. Poster Content (fades on program flip)
+   -------------------------------------------------------------------------- */
+.poster-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(48px, 7vh, 80px) clamp(16px, 4vw, 72px) clamp(16px, 3vh, 40px);
+    gap: clamp(0.75rem, 2vh, 1.5rem);
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.poster-content.fading {
+    opacity: 0;
+}
+
+/* --------------------------------------------------------------------------
+   6. Header
+   -------------------------------------------------------------------------- */
+.poster-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: clamp(0.4rem, 1vh, 0.85rem);
+}
+
+.logo-and-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    gap: 0.5rem;
+}
+
+.iitj-logo {
+    width: clamp(48px, 7vw, 82px);
+    height: clamp(48px, 7vw, 82px);
+    filter: drop-shadow(0 3px 8px rgba(0, 53, 102, 0.12));
+}
+
+.header-titles {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.uni-name {
+    font-family: var(--font-b);
+    font-weight: 800;
+    font-size: clamp(1.3rem, 3.5vw, 2.4rem);
+    letter-spacing: 0.03em;
+    color: var(--navy);
+    line-height: 1;
+}
+
+.divider-line {
+    width: clamp(180px, 30vw, 360px);
+    height: 1.5px;
+    background: radial-gradient(circle, var(--navy) 0%, rgba(0, 53, 102, 0) 90%);
+    margin: 3px 0;
+}
+
+.program-name {
+    font-family: var(--font-b);
+    font-weight: 700;
+    font-size: clamp(0.75rem, 1.5vw, 1.1rem);
+    letter-spacing: 0.08em;
+    color: var(--navy);
+}
+
+.title-main-wrapper {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.4rem, 1vw, 1rem);
+}
+
+.main-title {
+    font-family: var(--font-h);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 7vw, 5.5rem);
+    letter-spacing: 0.01em;
+    color: var(--navy-dk);
+    line-height: 1;
+}
+
+.spark {
+    margin-top: -1rem;
+}
+
+.spark-left {
+    transform: rotate(-15deg);
+}
+
+.spark-right {
+    transform: rotate(15deg);
+}
+
+.subtitle-handwritten {
+    position: relative;
+    font-family: var(--font-hw);
+    font-size: clamp(1.1rem, 2.5vw, 2rem);
+    font-weight: 700;
+    color: var(--navy-dk);
+    line-height: 1.3;
+}
+
+.subtitle-handwritten p:first-child::after {
+    content: '\A';
+    white-space: pre;
+}
+
+.highlight-underline {
+    position: relative;
+    white-space: nowrap;
+}
+
+.highlight-underline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 100%;
+    height: 5px;
+    background: var(--yellow);
+    border-radius: 50px;
+    z-index: -1;
+}
+
+.handwritten-star {
+    position: absolute;
+    right: -30px;
+    bottom: 0;
+    animation: starBob 2.5s infinite alternate ease-in-out;
+    width: clamp(18px, 2.5vw, 28px);
+    height: clamp(18px, 2.5vw, 28px);
+}
+
+@keyframes starBob {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(-4px) rotate(15deg);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   7. KPI Cards
+   -------------------------------------------------------------------------- */
+.poster-main {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 2vh, 1.75rem);
+    flex: 1;
+    justify-content: center;
+}
+
+.kpi-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1rem, 3vw, 2.5rem);
+}
+
+.card {
+    position: relative;
+    background: #fff;
+    border-radius: clamp(16px, 2.5vw, 28px);
+    box-shadow: 0 12px 30px rgba(12, 50, 92, 0.07);
+    padding: clamp(2rem, 5vh, 3.5rem) clamp(1rem, 3vw, 2rem) clamp(1.25rem, 3vh, 2.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+    min-height: clamp(200px, 28vh, 340px);
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+.card-badge {
+    position: absolute;
+    top: -17px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    padding: 8px 22px;
+    border-radius: 10px;
+    font-family: var(--font-h);
+    font-weight: 700;
+    font-size: clamp(0.7rem, 1.2vw, 0.95rem);
+    letter-spacing: 0.05em;
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.badge-blue {
+    background: var(--navy);
+}
+
+.badge-green {
+    background: var(--green);
+}
+
+.card-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.75rem, 2vh, 1.5rem);
+    flex: 1;
+}
+
+.graphic-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.target-svg {
+    width: clamp(70px, 12vw, 115px);
+    height: clamp(70px, 12vw, 115px);
+}
+
+.svg-shadow {
+    filter: drop-shadow(0 5px 10px rgba(12, 50, 92, 0.07));
+}
+
+.target-card {
+    border: 3px solid var(--navy);
+}
+
+.achieved-card {
+    border: 3px solid var(--green-br);
+}
+
+.value-display-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.5rem, 1.5vw, 1.25rem);
+}
+
+.count-value {
+    font-family: var(--font-h);
+    font-weight: 700;
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+}
+
+.text-blue {
+    color: var(--navy-dk);
+}
+
+.text-green {
+    color: var(--green);
+}
+
+.num-spark {
+    flex-shrink: 0;
+    opacity: 0.8;
+}
+
+/* Progress ring */
+.progress-ring-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-ring-wrapper svg {
+    width: clamp(90px, 14vw, 140px);
+    height: clamp(90px, 14vw, 140px);
+}
+
+#progress-circle-fill {
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 0.9s var(--ease);
+}
+
+.progress-inner-num {
+    position: absolute;
+    font-family: var(--font-h);
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    line-height: 1;
+    color: var(--green);
+}
+
+.capsule-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 18px;
+    border-radius: 50px;
+}
+
+.green-capsule-bg {
+    background: #e8f5e9;
+}
+
+.percent-label {
+    font-family: var(--font-h);
+    font-weight: 700;
+    font-size: clamp(1rem, 2.2vw, 1.5rem);
+    line-height: 1;
+}
+
+.mini-spark {
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   8. Bottom Banner
+   -------------------------------------------------------------------------- */
+.bottom-banner-card {
+    background: var(--navy-dk);
+    border-radius: clamp(14px, 2vw, 24px);
+    padding: clamp(0.6rem, 1.5vh, 1rem) clamp(1rem, 3vw, 2.5rem);
+    color: #fff;
+    box-shadow: 0 12px 28px rgba(12, 50, 92, 0.18);
+}
+
+.banner-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.rocket-wrapper {
+    flex-shrink: 0;
+}
+
+.rocket-svg {
+    width: clamp(52px, 8vw, 80px);
+    height: clamp(52px, 8vw, 80px);
+    animation: rocketFloat 4s infinite ease-in-out;
+    filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.3));
+}
+
+@keyframes rocketFloat {
+
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    50% {
+        transform: translate(3px, -4px) rotate(2deg);
+    }
+}
+
+.rocket-flame {
+    animation: flameFlicker 0.15s infinite alternate;
+    transform-origin: bottom left;
+}
+
+@keyframes flameFlicker {
+    0% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        transform: scale(1.15);
+    }
+}
+
+.banner-text-content {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 0 0.5rem;
+}
+
+.banner-title {
+    font-family: var(--font-h);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 4vw, 3rem);
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+}
+
+.highlight-yellow {
+    color: var(--yellow);
+    position: relative;
+    display: inline-block;
+    padding-bottom: 2px;
+}
+
+.highlight-yellow::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 3px;
+    background: var(--yellow);
+    border-radius: 50px;
+}
+
+.banner-underline {
+    width: clamp(80px, 12vw, 160px);
+    height: 3px;
+    background: var(--yellow);
+    border-radius: 50px;
+    margin-top: 2px;
+}
+
+.banner-subtitle {
+    font-family: var(--font-b);
+    font-size: clamp(0.8rem, 1.6vw, 1.15rem);
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.highlight-yellow-sub {
+    color: var(--yellow);
+    font-weight: 700;
+}
+
+.mascot-wrapper {
+    position: relative;
+    flex-shrink: 0;
+    width: clamp(70px, 10vw, 130px);
+    height: clamp(70px, 10vw, 130px);
+}
+
+.mascot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(-3px 6px 10px rgba(0, 0, 0, 0.25));
+    animation: mascotBob 3s infinite alternate ease-in-out;
+}
+
+@keyframes mascotBob {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-5px);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   9. Footer
+   -------------------------------------------------------------------------- */
+.poster-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.whatsapp-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(6px);
+    padding: 7px 22px;
+    border-radius: 50px;
+    box-shadow: 0 3px 10px rgba(12, 50, 92, 0.05);
+}
+
+.wa-text {
+    font-family: var(--font-b);
+    font-weight: 700;
+    font-size: clamp(0.72rem, 1.2vw, 0.95rem);
+    color: var(--navy-dk);
+}
+
+/* --------------------------------------------------------------------------
+   10. Control Panel (slide-out from right)
+   -------------------------------------------------------------------------- */
+.control-panel-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(380px, 90vw);
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(20px);
+    border-left: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.14);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.4s var(--ease);
+}
+
+.control-panel-drawer.open {
+    transform: translateX(0);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.panel-header h2 {
+    font-family: var(--font-h);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--navy-dk);
+}
+
+.panel-close-btn {
+    background: transparent;
+    border: none;
+    color: rgba(12, 50, 92, 0.5);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.panel-close-btn:hover {
+    color: var(--navy);
+}
+
+.panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.panel-description {
+    font-size: 0.78rem;
+    color: rgba(12, 50, 92, 0.6);
+    line-height: 1.4;
+}
+
+.panel-divider {
+    border: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.control-group {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    padding: 1rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.control-group-title {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--navy-dk);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.control-group-subtitle {
+    font-size: 0.68rem;
+    color: rgba(12, 50, 92, 0.5);
+    line-height: 1.3;
+}
+
+.input-row {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.input-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.input-col label,
+.meta-input-group label,
+.live-simulator-options label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: rgba(12, 50, 92, 0.55);
+    text-transform: uppercase;
+}
+
+.number-input,
+.text-input,
+.select-input {
+    background: #fff;
+    border: 1px solid rgba(12, 50, 92, 0.14);
+    border-radius: 7px;
+    padding: 0.55rem 0.6rem;
+    color: var(--navy-dk);
+    font-family: var(--font-b);
+    font-size: 0.82rem;
+    width: 100%;
+    transition: 0.2s ease;
+}
+
+.number-input:focus,
+.text-input:focus,
+.select-input:focus {
+    border-color: var(--navy);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 53, 102, 0.1);
+}
+
+.button-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    font-family: var(--font-b);
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: 7px;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+    transition: 0.18s ease;
+}
+
+.btn-primary {
+    background: var(--navy);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #002244;
+}
+
+.btn-secondary {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--navy-dk);
+}
+
+.btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1.5px solid rgba(12, 50, 92, 0.2);
+    color: var(--navy-dk);
+    flex: 1;
+}
+
+.btn-outline:hover {
+    background: rgba(12, 50, 92, 0.05);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/* Toggles */
+.toggle-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toggle-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.toggle-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--navy-dk);
+}
+
+.toggle-description {
+    font-size: 0.68rem;
+    color: rgba(12, 50, 92, 0.5);
+}
+
+.switch-toggle {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 22px;
+    flex-shrink: 0;
+}
+
+.switch-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.12);
+    transition: .35s;
+    border-radius: 22px;
+    cursor: pointer;
+}
+
+.toggle-slider:before {
+    content: '';
+    position: absolute;
+    height: 15px;
+    width: 15px;
+    left: 3px;
+    bottom: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: .3s;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.switch-toggle input:checked+.toggle-slider {
+    background: var(--green);
+}
+
+.switch-toggle input:checked+.toggle-slider:before {
+    transform: translateX(20px);
+}
+
+.live-simulator-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.meta-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.panel-footer {
+    padding-top: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   11. Toast Notifications
+   -------------------------------------------------------------------------- */
+.toast-toaster {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: min(360px, calc(100vw - 40px));
+    pointer-events: none;
+}
+
+.toast {
+    background: #fff;
+    border: 2px solid var(--green);
+    border-radius: 14px;
+    padding: 0.85rem 1.1rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    color: var(--navy-dk);
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    transform: translateY(40px);
+    opacity: 0;
+    animation: toastIn 0.4s var(--ease) forwards;
+    pointer-events: auto;
+}
+
+.toast.toast-remove {
+    animation: toastOut 0.3s var(--ease) forwards;
+}
+
+.toast-icon {
+    color: var(--green);
+    flex-shrink: 0;
+}
+
+.toast-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.toast-headline {
+    font-family: var(--font-h);
+    font-weight: 700;
+    font-size: 0.82rem;
+}
+
+.toast-message {
+    font-size: 0.72rem;
+    color: rgba(12, 50, 92, 0.65);
+}
+
+@keyframes toastIn {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes toastOut {
+    to {
+        transform: translateX(110%);
+        opacity: 0;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   12. Mobile fine-tuning
+   -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+    .kpi-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .banner-inner {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .rocket-wrapper {
+        order: 1;
+    }
+
+    .banner-text-content {
+        order: 2;
+        width: 100%;
+    }
+
+    .mascot-wrapper {
+        order: 3;
+    }
+
+    .subtitle-handwritten {
+        text-align: center;
+    }
+
+    .handwritten-star {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .banner-title {
+        font-size: 1.2rem;
+    }
+}
