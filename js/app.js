@@ -1,7 +1,7 @@
 /**
  * ==========================================================================
  * LIVE POSTER DASHBOARD — APP ENGINE
- * Multi-program rotation every 30 seconds, live counters, audio, toasts
+ * Multi-program rotation every 15 seconds, live counters, audio, toasts
  * ==========================================================================
  */
 
@@ -40,7 +40,7 @@ let currentProgramIndex = 0;
 let autoRotate = true;
 let rotateTimer = null;
 let countdownInterval = null;
-const FLIP_DURATION_MS = 30000; // 30 seconds per program
+const FLIP_DURATION_MS = 15000; // 15 seconds per program
 let flipStartTime = null;
 
 let audioCtx = null;
